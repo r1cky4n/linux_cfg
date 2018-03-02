@@ -1,0 +1,136 @@
+# .cshrc
+
+
+
+#---------------------------------------
+# Rick's Custom Settings
+#---------------------------------------
+
+# Terminal Command Line 
+set prompt="%B%{\033[33m%}%m~csh> "
+
+#---------------------------------------
+# Environmental Variables
+#---------------------------------------
+setenv WORK    "/home/rick/work"
+setenv MODELS  "/home/rick/work/models"
+setenv SCRIPTS "/home/rick/work/scripts"
+
+# Model Root set to MVP root
+#setenv MODEL_ROOT  "/home/rick/work/models/mvp_1p0"
+setenv MVP_GITREPO "git@github.com:zglue/mvp_1p0.git" 
+
+#---------------------------------------
+# Aliases
+#---------------------------------------
+
+alias ll 'ls -l'
+alias la 'ls -a'
+
+## tarball and untar
+alias tarball 'tar -czvf' 
+alias untar 'tar -xzvf'
+
+## recursive find from current directory for files containing a string
+alias findall 'find . -type f -print0 | xargs -0 grep -l'
+
+## colored grep
+alias grep 'grep --color=always'
+
+## Git Aliases
+## list local repo's changes compared to master
+alias git_diff_local 'git diff origin/master...HEAD'
+## list master's changes after local branch was created
+alias git_diff_master 'git diff HEAD...origin/master'
+
+# default python version 2.7
+alias python '/usr/local/bin/python2.7'
+
+
+#---------------------------------------
+# Setup Aliases
+#---------------------------------------
+
+alias setup_cadence 'source $SCRIPTS/cshrc.CadenceCIC; source ~/.cshrc'
+alias setup_git 'setenv PATH /opt/git-2.8.3/bin:${PATH}'
+alias setup_ssh 'ssh-agent csh; ssh-add'
+alias setup_mvp 'setenv MODEL_ROOT  "/home/rick/work/models/mvp_1p0"'
+alias setup_model  'setenv MODEL_ROOT  "/home/rick/work/models/zeus2"'
+
+# PDF Viewers
+#   Z1 - okular, acroread
+#   Z2 - evince
+alias pdf_z1 acroread
+alias pdf_z2 evince
+
+
+
+
+# Simulation Stuff
+#
+alias irun_zeus '$MODEL_ROOT/zeus/scripts/sim/irun.py --script irun_zeus.csh --trace'
+alias irun_zeus_sch '$MODEL_ROOT/zeus/scripts/sim/irun.py --script irun_zeus_sch.csh'
+alias irun_zeus_plnet '$MODEL_ROOT/zeus/scripts/sim/irun.py --script irun_zeus_plnet.csh'
+alias irun_zeus_sch_plnet '$MODEL_ROOT/zeus/scripts/sim/irun.py --script irun_zeus_sch_plnet.csh'
+alias irun_zeus_sch_plnet_sdf '$MODEL_ROOT/zeus/scripts/sim/irun.py --script irun_zeus_sch_plnet_sdf.csh'
+
+
+
+alias irun_zeus_notrace '$MODEL_ROOT/zeus/scripts/sim/irun.py --script irun_zeus.csh'
+alias irun_tile '$MODEL_ROOT/zeus/scripts/sim/irun.py --script irun_tile_z2.csh --trace'
+alias irun_tile_plnet '$MODEL_ROOT/zeus/scripts/sim/irun.py --script irun_tile_z2.csh'
+alias irun_t1_upf '$MODEL_ROOT/zeus/scripts/sim/irun.py --script irun_t1_upf.csh --trace'
+alias irun_zeus_regress '$MODEL_ROOT/zeus/scripts/sim/irun.py --script irun_zeus.csh --test_list $MODEL_ROOT/zeus/scripts/sim/test_list.txt'
+alias irun_turnin_regress '$MODEL_ROOT/zeus/scripts/sim/irun.py --script irun_zeus.csh --test_list $MODEL_ROOT/zeus/scripts/sim/turnin_list.txt'
+alias irun_plnet_regress '$MODEL_ROOT/zeus/scripts/sim/irun.py --script irun_zeus.csh --test_list $MODEL_ROOT/zeus/scripts/sim/test_list_plnet.txt --plnet'
+alias irun_plnet_upf_regress '$MODEL_ROOT/zeus/scripts/sim/irun.py --script irun_zeus.csh --test_list $MODEL_ROOT/zeus/scripts/sim/test_list_plnet_upf.txt --plnet'
+
+alias irun_chicago_regress '$MODEL_ROOT/zeus/scripts/sim/irun.py --script irun_zeus.csh --test_list $MODEL_ROOT/zeus/scripts/sim/chicago_test.txt'
+alias irun_chicago_plnet_regress '$MODEL_ROOT/zeus/scripts/sim/irun.py --script irun_zeus.csh --test_list $MODEL_ROOT/zeus/scripts/sim/chicago_plnet_test.txt'
+
+
+
+
+alias sim '$MODEL_ROOT/zeus/scripts/sim/irun.py'
+
+
+
+
+# Lint Commands
+#
+alias irun_lint '$MODEL_ROOT/zeus/scripts/sim/irun.py --script irun_zeus_lint.csh'
+alias irun_tile_lint '$MODEL_ROOT/zeus/scripts/sim/irun.py --script irun_tile_lint.csh'
+
+alias view_lint 'ncbrowse -64bit -cdslib ./INCA_libs/irun.lnx8664.15.20.nc/cds.lib -hdlvar ./INCA_libs/irun.lnx8664.15.20.nc/hdl.var -environment $MODEL_ROOT/zeus/scripts/hal/zeus2/waivers.ncb irun.log'
+alias view_tile_lint 'ncbrowse -64bit -cdslib ./INCA_libs/irun.lnx8664.15.20.nc/cds.lib -hdlvar ./INCA_libs/irun.lnx8664.15.20.nc/hdl.var -environment $MODEL_ROOT/zeus/scripts/hal/zeus2/tNxM_waivers.ncb irun.log'
+
+
+# Dynamic Timing
+#
+alias irun_t4x4 '$MODEL_ROOT/zeus/scripts/sim/irun.py --script irun_t4x4_plnet.csh --trace'
+
+
+
+# License Stuff
+#
+alias irun_lic  'lview ncsim'
+
+
+
+#------------------------------------------------
+# PATH Updates
+#------------------------------------------------
+
+#setenv PATH /tools/utils/tcl/activestate8.6/bin:$PATH
+
+# NOTE - cuda_path is NOTE USED - anaconda has everything set up properly
+#
+#alias cuda_path 'setenv PATH /tools/utils/anaconda3/bin:/usr/local/cuda-8.0/bin:$PATH; \
+#                 setenv LD_LIBRARY_PATH /usr/local/cuda-8.0/lib64:/tools/utils/cuda/lib64:$LD_LIBRARY_PATH'
+
+# Setup Anaconda for Tensorflow applications
+#
+alias setup_conda 'setenv PATH /tools/utils/anaconda3/bin:$PATH'
+
+
+

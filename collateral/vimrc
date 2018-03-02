@@ -1,0 +1,152 @@
+"Expand tab, soft tabs, and shifts to 3 spaces
+set expandtab
+set tabstop=4
+set softtabstop=4
+set shiftwidth=4
+
+" Move and match on partially completed searches, and highlight complete
+" matches
+set incsearch
+set hlsearch
+
+" searches ignore case unless an upper case character is specifically used
+set smartcase
+set ignorecase
+
+" Showing matching brackets
+set showmatch
+
+" display line number
+set number
+
+" Visual indicator for 120 chars 
+set colorcolumn=121
+
+" Enable autoindent and smartindenting, maintain alignment 
+set autoindent
+set smartindent
+set copyindent
+
+" Enable ruler with custom format - tracks cursor's line and column number
+"   default format at the moment
+set ruler
+set rulerformat=row\ %l,\ col\ %c\ %=%P
+
+" Certain commands may move the cursor to the start of the line (first non-blank)
+set nostartofline
+
+" User specific backup directory for swap files 
+"   send all .swp files to backup directory
+set backupdir=/home/rick/.vim/.backup
+set directory=/home/rick/.vim/.backup
+
+" Suppress swap file warnings
+set shortmess+=A
+
+" Update swap files in 5 s intervals of inactivity
+set updatetime=5000
+
+" More flexible backspace/deletion
+set backspace=2
+
+" More flexible status line (thing at the bottom of vim)
+set laststatus=2
+
+" Persistant vim session information storage 
+"set viminfo=%,'50
+"set viminfo+=\"100,:100
+"set viminfo+=n~/.viminfo
+
+" Show which mode you're in (insert, replace, visual)
+set showmode
+
+" Set a 2 line minimum to keep above and below the cursor
+set scrolloff=2
+
+" Better mouse movements
+set ttymouse=xterm2
+
+" Proportionally resize windows on new windows and deletions
+set equalalways
+
+" Window splitting options for :split and :vsplit
+set splitbelow
+set splitright
+
+" Set of flags that toggles vi-compatible behaviors. We set the following:
+"   % matching takes backslashes into account
+set cpoptions-=M
+
+" Configures the list of format options:
+"   comment character carryover on new line (+=ro)
+"   numbered lists carryover on new line (+=n)
+"   remove auto-wrap of comments(-=c)
+set formatoptions+=ron
+set formatoptions-=c
+
+" Word wrap
+set wrap
+
+" Set GUI Options
+" remove toolbar (icons and buttons)
+set guioptions-=T
+" remove menubar (file, edit, etc)
+set guioptions-=m
+
+set textwidth=120
+
+" gvim tab configurations	
+set tabpagemax=20
+set showtabline=1
+
+" Color Scheme Setup
+syntax on
+"color jellybeans
+"color github
+color eclipse
+
+"color solarized
+"set background=dark
+
+" Font Options
+set guifont=Monospace\ 12
+
+" Place the filename on the gvim titlebar
+set title
+set titleold=""
+
+"============================================================
+" Filetype setup
+"
+
+" Default unknown filetypes to systemverilog
+if &ft == ""
+"set filetype=verilog_systemverilog
+endif
+
+" Apply systemverilog syntax to verilog files
+au BufRead,BufNewFile *.{v[hspa],slg,chf,hier,sig,sv[ah]} set filetype=verilog_systemverilog
+" HDL/UDF files are PERL
+au BufRead,BufNewFile *.{hdl,udf} set filetype=perl
+
+
+
+"============================================================
+" Mappings
+"
+
+" Map remove highlighting to Ctrl-N
+nmap <silent> <C-N> :silent noh<CR>
+
+" New Tab
+nmap <silent> <C-T> :silent tabnew<CR>
+
+" New gvim window
+nmap <silent> <C-P> :silent !gvim &<CR><CR>
+
+" quit an open tabf or buffer - confirmation window if changes exist
+nmap <silent> <C-Q> :silent confirm bdelete<CR>
+
+" save file
+nmap <silent> <C-S> :silent w<CR>
+

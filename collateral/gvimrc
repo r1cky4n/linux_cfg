@@ -1,0 +1,11 @@
+"============================================================
+" GVIM settings
+"============================================================
+
+" initial gvim window size
+set lines=40 columns=130
+
+" gvim tab configurations	
+set tabpagemax=20
+set showtabline=1
+

@@ -1,0 +1,227 @@
+//======================================================================================================================
+// tile4x4.vs
+//
+// Contacts            : Rick Yan <rick@zglue.com>
+// Original Author(s)  : Rick Yan <rick@zglue.com>
+// Original Date       : 1/2017
+//
+// -- zGlue Proprietary
+// -- Copyright (C) 2017 zGlue Incorporated
+// -- All Rights Reserved
+//
+//  4x4 block of Tiles + Routers - atomic Tile Grid block for zeus2
+//
+//      Physical arrangement of this block is as follows
+//
+//      +--------+--------+--------+--------+
+//      |   t0   |   t1   |   t2   | router |
+//      |        |        |        |   up   |
+//      |        |        |        |        |
+//      +--------+--------+--------+--------+
+//      |   t0   |   t1   |   t2   | router |
+//      |        |        |        |  down  |
+//      |        |        |        |        |
+//      +--------+--------+--------+--------+
+//      |   t0   |   t1   |   t2   | router |
+//      |        |        |        |  left  |
+//      |        |        |        |        |
+//      +--------+--------+--------+--------+
+//      |   t0   |   t1   |   t2   | router |
+//      |        |        |        | right  |
+//      |        |        |        |        |
+//      +--------+--------+--------+--------+
+//
+//======================================================================================================================
+
+`ifndef TILE4X4_VS
+`define TILE4X4_VS
+
+`include "zeus_pkg.vh"
+
+// Sub-module includes
+//
+`include "tile4.vs"
+
+module tile4x4 (
+
+);
+
+import zeus_pkg::*;
+
+//======================================================================================================================
+// Parameters
+//======================================================================================================================
+
+
+
+//======================================================================================================================
+// Interface signal declarations
+//======================================================================================================================
+
+// NOTE - there is a 4x parallel interface for the 4x4 block to provide 4 seperate horizontal interfaces
+//        to daisychain together the horizontal tiles, while keeping the vertical groups independent
+//        other than their routers
+//
+//        0 -> 1x4 Tile Block with Router Flow to Right
+//        1 -> 1x4 Tile Block with Router Flow to Left
+//        2 -> 1x4 Tile Block with Router Flow to Down
+//        3 -> 1x4 Tile Block with Router Flow to Up
+//
+
+// IO Grid Signals
+//
+//
+inout  wire [3:0][5:0]      grid_row,       // 4x6 grid rows running horizontal across tile
+inout  wire [3:0][2:0]      grid_r2c,       // 4x3 horizontal grid row being connected to vertical column
+inout  wire [2:0]           grid_col,       // 3x1 grid column running vertical across tile
+
+// System Signals
+//
+input  wire [3:0]            clk,         // System clock for reading and writing registers
+input  wire [3:0]            resetb,      // System reset active low
+input  wire [3:0][7:0]       sys_wbus,    // System bus to write and address all pad signals
+output wire [3:0][7:0]       sys_rbus,    // Read data from the pad
+input  wire [3:0][3:0]       sys_bctl,    // Chip operational state of overall 
+
+// Addressing Control logic
+//
+input  wire [3:0]            pad_dcd,      // Address decode from higher level decoder 
+
+// Pad presets from top level metal
+// 
+input  wire [3:0][NUM_PRE_BITS_4-1:0]      pad_preset,  // Set to preset values from top level metal 
+
+// Pad IO Signals
+// FIXME - should we remove router pad_io
+//
+inout  wire [3:0][3:0]                      pad_io,      // Pad IO from tile
+
+// Buffered signals to match physicals
+//
+output wire [3:0]            clk_buf,	   // clk to block on the right
+output wire [3:0]            resetb_buf,   // resetb to block on the right
+output wire [3:0][7:0]       sys_wbus_buf, // system write bus to block on the right
+input  wire [3:0][7:0]       sys_rbus_buf, // system read bus from block on the right
+output wire [3:0][3:0]       sys_bctl_buf, // system write bus to block on the right  
+
+// Reset, Power and Ground signals
+//
+input  wire [3:0]            resetb_latch_3p3, // analog reset input
+output wire [3:0]            resetb_latch_buf, // analog reset buffered output
+input  wire [3:0]            vdd,              // vdd 1.2v
+input  wire [3:0]            vddio,            // vdd 3.3v
+input  wire [3:0]            vss               // Ground 
+
+
+//======================================================================================================================
+// Internal Signals declarations
+//======================================================================================================================
+
+wire [NUM_ROUTER_BITS-1:0]   local_bus_up;          // Local Digital Routing Bus - UP
+wire [NUM_ROUTER_BITS-1:0]   local_bus_down;        // Local Digital Routing Bus - DOWN
+wire [NUM_ROUTER_BITS-1:0]   local_bus_left;        // Local Digital Routing Bus - LEFT
+wire [NUM_ROUTER_BITS-1:0]   local_bus_right;       // Local Digital Routing Bus - RIGHT
+
+
+
+
+//======================================================================================================================
+// Tile4 Instantiations
+//======================================================================================================================
+
+// Local Router Associations
+//  
+// RIGHT -> R0: UP, R1: DOWN, R2: LEFT
+// LEFT  -> R0: UP, R1: DOWN, R2: RIGHT
+// DOWN  -> R0: UP, R1: LEFT, R2: RIGHT
+// RIGHT -> R0: UP, R1: DOWN, R2: LEFT
+
+
+// RIGHT Router
+//
+tile4  tile4_i0_r (
+    //**********************************************************************
+    // IO Grid Signals
+    //**********************************************************************
+    .grid_row               (grid_row[0][5:0]),         
+    .grid_r2c               (grid_r2c[0][2:0]),
+    .grid_col               (grid_col[2:0]),         
+    .clk                    (clk[0]),              
+    .resetb                 (resetb[0]),           
+    .sys_wbus               (sys_wbus[0][7:0]),         
+    .sys_rbus               (sys_rbus[0][7:0]),         
+    .sys_bctl               (sys_bctl[0][3:0]),         
+
+    //**********************************************************************
+    // Local Router Interface
+    //**********************************************************************
+
+    .router0_in              (local_bus_up), 
+    .router1_in              (local_bus_down), 
+    .router2_in              (local_bus_left), 
+    .router_out              (local_bus_right),
+
+    //**********************************************************************
+    // Global Router Interface
+    //**********************************************************************
+
+    bus_in,     
+    bus_out,  
+
+    //**********************************************************************
+    // Daisy Chained Non Grid Input and Output signals
+    //**********************************************************************
+    .pad_hdcd               (pad_dcd[0]),     
+
+    //**********************************************************************
+    // Pad presets from top level metal 
+    //**********************************************************************
+    .pad_preset             (pad_preset[0][NUM_PRE_BITS_4-1:0]),       
+
+    //**********************************************************************
+    // Pad IO Signals    
+    //**********************************************************************
+    .pad_io                 (pad_io[0][3:0]),           
+
+
+    //**********************************************************************
+    // Buffered signals to match physicals
+    //**********************************************************************
+    .clk_buf                (clk_buf[0]),          
+    .resetb_buf             (resetb_buf[0]),       
+    .sys_wbus_buf           (sys_wbus_buf[0]),     
+    .sys_rbus_buf           (sys_rbus_buf[0]),     
+    .sys_bctl_buf           (sys_bctl_buf[0]),     
+
+    //**********************************************************************
+    // Reset; Power and Ground signals
+    //**********************************************************************
+    .resetb_latch_3p3       (resetb_latch_3p3[0]), 
+    .resetb_latch_buf       (resetb_latch_buf[0]), 
+    .vdd                    (vdd[0]),              
+    .vddio                  (vddio[0]),            
+    .vss                    (vss[0])            
+);
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+//======================================================================================================================
+// Assertions
+//======================================================================================================================
+
+
+
+endmodule
+
+`endif // TILE4X4_VS

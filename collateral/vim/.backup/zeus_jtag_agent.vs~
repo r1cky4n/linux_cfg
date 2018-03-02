@@ -1,0 +1,22 @@
+//======================================================================================================================
+// zeus_jtag_agent.vh
+//
+// Contacts            : Rick Yan <rick@zglue.com>
+// Original Author(s)  : Rick Yan <rick@zglue.com>
+// Original Date       : 3/2017
+//
+// -- zGlue Proprietary
+// -- Copyright (C) 2017 zGlue Incorporated
+// -- All Rights Reserved
+//
+// UVM Agent for initialization sequences, included in zeus_tb_pkg
+//
+//======================================================================================================================
+
+
+`ifndef ZEUS_JTAG_AGENT_VH
+`define ZEUS_JTAG_AGENT_VH
+
+
+`endif // ZEUS_JTAG_AGENT_VH
+
